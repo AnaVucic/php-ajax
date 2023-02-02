@@ -45,6 +45,21 @@ class Membership
         }
     }
 
+    public static function getOne(mysqli $conn, $id)
+    {
+        $query = "SELECT * FROM membership WHERE MembershipID=$id";
+
+        if($result = $conn->query($query))
+        {
+            $row = $result->fetch_array(1);
+            return new Membership($row["MembershipID"], $row["MembershipName"], $row["Description"], $row["Duration"], $row["Fee"]);
+        } 
+        else 
+        {
+            echo "No MEMBER found by this id";
+            return null;
+        }
+    }
 
 
 

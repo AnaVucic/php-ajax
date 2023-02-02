@@ -172,13 +172,15 @@ if (!$result) {
                   <div class="form-group date" data-provide="datepicker">
                     <label for="">Starting date:</label>
                     <div class="input-group date">
-                      <input type="text" class="form-control" value="Click to pick a date">
+                      <input id="myDate" name="date" type="text" class="form-control" value="Click to pick a date" data-date-format="MM/DD/YYYY">
                       <div class="input-group-addon">
                         <span class="glyphicon glyphicon-th"></span>
                       </div>
                     </div>
                   </div>
-
+                  <div class="form-group">
+                    <button type="submit" id="btnAdd" class="btn btn-primary">Add</button>
+                  </div>
                 </div>
               </div>
             </form>
@@ -186,34 +188,72 @@ if (!$result) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="btnAdd" type="submit" class="btn btn-primary">Add</button>
+
         </div>
       </div>
     </div>
   </div>
 
-<!-- FOOTER -->
+  <!-- FOOTER -->
   <footer class="mt-auto">
     <div class="row">
-        <div class="col text-center">
-            <span class="text-muted">Gym Membership Management System</span>
-        </div>
+      <div class="col text-center">
+        <span class="text-muted">Gym Membership Management System</span>
+      </div>
     </div>
-</footer>
-<!-- SCRIPTS -->
-<script>
-$(document).ready(function() {
-  console.log("Page is ready!");
-  const now = new Date();
-});
-
-
-
-</script>
+  </footer>
+  <!-- SCRIPTS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      console.log("Page is ready!");
+      const now = new Date();
+    });
+
+    $("#addForm").submit(function() {
+      console.log("nesto");
+      event.preventDefault();
+      const $form = $(this);
+
+      // const $fromspan = $form.find("span");
+      // console.log($fromspan);
+      // var value = $("#myDate").datepicker("getDate");
+      // console.log(value);
+
+      const $input = $form.find("input, select");
+      // $input.add(value);
+      // console.log($input);
+      const serializedData = $form.serialize();
+      console.log(serializedData);
+
+      $input.prop('disabled', true);
+
+      request = $.ajax({
+        url: 'handler/add.php',
+        type: 'post',
+        data: serializedData
+      });
+
+      request.done(function(response) {
+        console.log(response);
+        if (response == "Success") {
+          console.log("Added new membership");
+          location.reload(true);
+        } else {
+          console.log("Membership not added " + response);
+        }
+        console.log(response);
+      });
+
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error occurred: " + textStatus, errorThrown);
+      });
+    });
+  </script>
+
 </body>
 
 </html>

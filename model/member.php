@@ -40,13 +40,13 @@ Class Member
         }
     }
 
-    public static function getById(mysqli $conn, $id)
+    public static function getOne(mysqli $conn, $id)
     {
         $query = "SELECT * FROM member WHERE MemberID=$id";
 
         if($result = $conn->query($query))
         {
-            $row = $result->fetch_assoc("MemberID");
+            $row = $result->fetch_array(1);
             return new Member($row["MemberID"], $row["Firstname"], $row["Lastname"]);
         } 
         else 

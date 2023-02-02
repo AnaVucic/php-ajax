@@ -51,4 +51,16 @@ class MemberMembership
         
         }
     }
+
+    public static function add($data, mysqli $conn)
+    {
+        $memberID = $data->member->memberid;
+        $membershipID = $data->membership->membershipid;
+        $date = $data->startDate->format("Y-m-d");
+        $status = true;
+        $query = "INSERT INTO member_membership(member_id,membership_id,start_date,status) 
+        VALUES($memberID, $membershipID, '$date', 1)";
+
+        return $conn->query($query);
+    }
 }
