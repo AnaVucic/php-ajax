@@ -31,6 +31,7 @@ if (!$result) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
   <!-- <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -42,6 +43,10 @@ if (!$result) {
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://kit.fontawesome.com/d652a11c76.js" crossorigin="anonymous"></script>
+
+  <script src="https://kit.fontawesome.com/d652a11c76.js" crossorigin="anonymous"></script>
+
   <title>Gym Membership Management System - Home Page</title>
 </head>
 
@@ -51,6 +56,7 @@ if (!$result) {
       <h1 class="logo"><a href="home.php">Gym Membership Management System</a></h1>
       <nav id="navbar" class="navbar">
         <ul>
+
           <li><a class="nav-link scrollto active" href="">Home</a></li>
           <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
@@ -87,7 +93,7 @@ if (!$result) {
 
   <section class="d-flex align-items-center">
     <table class="table">
-      <thead>
+      <thead style="text-align:center">
         <tr>
           <th scope="col">#</th>
           <th scope="col">Firstname</th>
@@ -96,10 +102,12 @@ if (!$result) {
           <th scope="col">Duration</th>
           <th scope="col">Start Date</th>
           <th scope="col">Status</th>
-          <th></th>
+          <th scope="col">Change Date</th>
+          <th scope="col">Cancel</th>
+
         </tr>
       </thead>
-      <tbody>
+      <tbody style="text-align:center">
 
 
         <?php
@@ -109,16 +117,21 @@ if (!$result) {
         ?>
           <tr>
             <td><?php echo $number++; ?></td>
-            <td><?php echo $row->member->firstname; ?></td>
-            <td><?php echo $row->member->lastname; ?></td>
-            <td><?php echo $row->membership->membershipname; ?></td>
-            <td><?php echo $row->membership->duration; ?></td>
-            <td><?php echo $row->startDate->format("j M, Y")  ?></td>
-            <td><?php if ($row->status) echo 'Active';
+            <td ><?php echo $row->member->firstname; ?></td>
+            <td ><?php echo $row->member->lastname; ?></td>
+            <td ><?php echo $row->membership->membershipname; ?></td>
+            <td ><?php echo $row->membership->duration; ?></td>
+            <td ><?php echo $row->startDate->format("j M, Y")  ?></td>
+            <td ><?php if ($row->status) echo 'Active';
                 else echo 'Inactive'; ?>
             </td>
             <td>
-              <button id="editMembership" class="btn fas fa-user-edit edit-membership" style="background-color: transparent" data-toggle="modal" data-target="#editModal" title="Edit memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
+
+              <button id="editMembership" class="btn fa-regular fa-calendar edit-membership" style="background-color: transparent" data-toggle="modal" data-target="#editModal" title="Edit memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
+              </button>
+            </td>
+            <td scope="col">
+              <button id="cancelMembership" name="cancelMembership" class="btn fa-solid fa-trash cancel-membership" style="background-color: transparent" title="Cancel memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
               </button>
             </td>
 
@@ -263,9 +276,8 @@ if (!$result) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-  <script src="https://kit.fontawesome.com/30083d8c18.js" crossorigin="anonymous"></script>
   <script src="js/main.js"></script>
-  
+
 
 </body>
 

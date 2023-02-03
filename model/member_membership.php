@@ -94,4 +94,11 @@ class MemberMembership
         WHERE member_id=$memberid AND membership_id=$membershipid";
         return $conn->query($query);
     }
+
+    public function deleteById(mysqli $conn) {
+        $memberidtodel = $this->member->memberid;
+        $membershipidtodel = $this->membership->membershipid;
+        $query = "DELETE FROM member_membership WHERE member_id=$memberidtodel AND membership_id=$membershipidtodel";
+        return $conn->query($query);
+    }
 }
