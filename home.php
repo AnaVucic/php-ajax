@@ -96,6 +96,7 @@ if (!$result) {
           <th scope="col">Duration</th>
           <th scope="col">Start Date</th>
           <th scope="col">Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -114,7 +115,13 @@ if (!$result) {
             <td><?php echo $row->membership->duration; ?></td>
             <td><?php echo $row->startDate->format("j M, Y")  ?></td>
             <td><?php if ($row->status) echo 'Active';
-                else echo 'Inactive'; ?></td>
+                else echo 'Inactive'; ?>
+            </td>
+            <td>
+              <button id="editMembership" class="btn fas fa-user-edit edit-membership" style="background-color: transparent" data-toggle="modal" data-target="#editModal" title="Edit memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
+              </button>
+            </td>
+
           </tr>
         <?php
         }
@@ -193,6 +200,55 @@ if (!$result) {
       </div>
     </div>
   </div>
+  <!-- EDIT MODAL -->
+  <div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Membership</h3>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="container edit-form">
+            <form action="#" method="post" id="editForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">Member:</label>
+                    <input id="memberNameEdit" type="text" class="form-control" readonly />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Member ID:</label>
+                    <input id="memberIDEdit" type="text" name="memberIDEdit" class="form-control" readonly />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Membership:</label>
+                    <input id="membershipNameEdit" type="text" class="form-control" readonly />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Membership ID:</label>
+                    <input id="membershipIDEdit" type="text" name="membershipIDEdit" class="form-control" readonly />
+                  </div>
+                  <div class="form-group date" data-provide="datepicker">
+                    <label for="">Starting date:</label>
+                    <div class="input-group date">
+                      <input id="editDate" name="editDate" type="text" class="form-control" value="Click to pick a date" data-date-format="MM/DD/YYYY">
+                      <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" id="btnAdd" class="btn btn-primary">Save</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer class="mt-auto">
@@ -207,6 +263,7 @@ if (!$result) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://kit.fontawesome.com/30083d8c18.js" crossorigin="anonymous"></script>
   <script>
     $(document).ready(function() {
       console.log("Page is ready!");
@@ -250,6 +307,76 @@ if (!$result) {
 
       request.fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Error occurred: " + textStatus, errorThrown);
+      });
+    });
+
+
+    $(".edit-membership").click(function() {
+
+      var compositeKey = $(this).val();
+      console.log("Filling edit form");
+      console.log(compositeKey);
+      const keys = compositeKey.split(' ');
+
+      request = $.ajax({
+        url: 'handler/get.php',
+        type: 'post',
+        data: {
+          'key1': keys[0],
+          'key2': keys[1]
+        },
+        dataType: 'json',
+        error: function(response) {
+          console.log(response);
+        }
+      });
+
+      request.done(function(response) {
+        console.log('Form filled');
+        console.log(response);
+
+        $('#memberNameEdit').val(response.member.firstname + " " + response.member.lastname);
+        $('#memberIDEdit').val(response.member.memberid);
+        $('#membershipNameEdit').val(response.membership.membershipname);
+        $('#membershipIDEdit').val(response.membership.membershipid);
+
+        var date = new Date(response.startDate.date);
+        console.log(date);
+        document.getElementById('editDate').value = date.toLocaleDateString("en-US", {year: "numeric", month: "2-digit", day: "2-digit"});
+
+      });
+
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('The following error occurred: ' + textStatus, errorThrown);
+      });
+
+    });
+
+    $('#editForm').submit(function() {
+      event.preventDefault();
+      console.log("Editing");
+      const $form = $(this);
+      const $inputs = $form.find('input');
+      const serializedData = $form.serialize();
+      console.log(serializedData);
+      $inputs.prop('disabled', true);
+
+      request = $.ajax({
+        url: 'handler/edit.php',
+        type: 'post',
+        data: serializedData
+      });
+
+      request.done(function(response) {
+        if (response === 'Success') {
+          console.log('Appointment edited');
+          location.reload(true);
+        } else console.log('Appointment not edited ' + response);
+        console.log(response);
+      });
+
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('The following error occurred: ' + textStatus, errorThrown);
       });
     });
   </script>
