@@ -13,12 +13,16 @@ class User
         $this->password = $password;
     }
 
-    public static function logInUser($user, mysqli $conn)
+    public static function logInUser($username, $password, mysqli $conn)
     {
         
-        $query = "SELECT * FROM user WHERE username='$user->username' AND password='$user->password'";
+        $query = "SELECT * FROM user WHERE username='$username' AND password='$password'";
         $result = $conn->query($query);
-        return $result;
+
+        if($result->num_rows == 1){
+            return new User($result->fetch_assoc()["UserID"], $username, $password);
+        }
+        return null;
     }
 
 }

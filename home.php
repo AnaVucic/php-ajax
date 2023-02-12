@@ -52,68 +52,60 @@ if (!$result) {
 
 <body>
   <header id="header" class="fixed-top">
-    <div class="container d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center justify-content-around">
       <h1 class="logo"><a href="home.php">Gym Membership Management System</a></h1>
-      <nav id="navbar" class="navbar">
+      <nav id="navbar" class="navbar d-flex align-items-center justify-content-center">
         <ul>
-
-          <li><a class="nav-link scrollto active" href="">Home</a></li>
-          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="#">Drop Down 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
-                <ul>
-                  <li><a href="#">Deep Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
-                  <li><a href="#">Deep Drop Down 3</a></li>
-                  <li><a href="#">Deep Drop Down 4</a></li>
-                  <li><a href="#">Deep Drop Down 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Drop Down 2</a></li>
-              <li><a href="#">Drop Down 3</a></li>
-              <li><a href="#">Drop Down 4</a></li>
-            </ul>
+          <li class="nav-item">
+            <form class="form-inline">
+            <input class="form-control mr-sm-2" type="text" placeholder="Member" aria-label="Search" id = "filerInput" onkeyup="tableFilter()">
+            <button class="btn btn-outline my-2 my-sm-0" type="submit">Search</button>
+          </form>
           </li>
-
-          <li><a class="getstarted scrollto">Get Started</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="logout.php">
+              <button class="btn btn-outline"> 
+                <i class="align-self-center fas fa-sign-out" ></i> 
+              </button>
+            </a>
+          </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
-
     </div>
   </header><!-- End Header -->
 
 
-  <br><br><br><br>
+  <br><br><br><br><br>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Add New Membership
-  </button>
-
+  <div class="d-flex justify-content-center">
+    <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter">
+      Add New Membership
+      </button>
+      <br><br>
+  </div>
+  
   <section class="d-flex align-items-center">
-    <table class="table">
-      <thead style="text-align:center">
+  
+    
+    <table class="table table-hover" id="table">
+      <thead class="thead-light" style="text-align:center">
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Firstname</th>
-          <th scope="col">Lastname</th>
-          <th scope="col">Membership</th> <!-- ovo je polje membershipName iz `membership` tabele -->
-          <th scope="col">Duration</th>
-          <th scope="col">Start Date</th>
-          <th scope="col">Status</th>
-          <th scope="col">Change Date</th>
-          <th scope="col">Cancel</th>
-
+          <th scope="col" onclick="tableSort(0)" style="cursor: pointer">#</th>
+          <th scope="col" onclick="tableSort(1)" style="cursor: pointer">Firstname</th>
+          <th scope="col" onclick="tableSort(2)" style="cursor: pointer">Lastname</th>
+          <th scope="col" onclick="tableSort(3)" style="cursor: pointer">Membership</th> <!-- ovo je polje membershipName iz `membership` tabele -->
+          <th scope="col" onclick="tableSort(4)" style="cursor: pointer">Duration</th>
+          <th scope="col" onclick="tableSortByDate()" style="cursor: pointer">Start Date</th>
+          <th scope="col" onclick="tableSort(6)" style="cursor: pointer">Status</th>
+          <th scope="col" >Change Date</th>
+          <th scope="col" >Cancel</th>
         </tr>
       </thead>
       <tbody style="text-align:center">
-
-
         <?php
         $number = 1;
         foreach ($result as $row) {
-
         ?>
           <tr>
             <td><?php echo $number++; ?></td>
@@ -126,7 +118,6 @@ if (!$result) {
                 else echo 'Inactive'; ?>
             </td>
             <td>
-
               <button id="editMembership" class="btn fa-regular fa-calendar edit-membership" style="background-color: transparent" data-toggle="modal" data-target="#editModal" title="Edit memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
               </button>
             </td>
@@ -134,7 +125,6 @@ if (!$result) {
               <button id="cancelMembership" name="cancelMembership" class="btn fa-solid fa-trash cancel-membership" style="background-color: transparent" title="Cancel memberhip" value="<?php echo $row->member->memberid . " " . $row->membership->membershipid  ?>">
               </button>
             </td>
-
           </tr>
         <?php
         }
@@ -277,7 +267,66 @@ if (!$result) {
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   <script src="js/main.js"></script>
+  <script type="application/javascript">
 
+    function tableFilter(){
+      let input, filter, table, tr, td, i, value;
+      input = document.getElementById("filerInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("table");
+      tr = table.getElementsByTagName("tr");
+      for(i = 1; i < tr.length; i++){
+        td = tr[i].getElementsByTagName("td")[2];
+        if(td) {
+          value = td.textContent || td.innerText;
+          if(value.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          }
+          else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+  <script>
+    function tableSort(n){
+      var table, rows, toggle, i, x, y, toSwitch, dir, switchCnt = 0;
+      table = document.getElementById("table");
+      toggle = true;
+      dir = "asc";
+      while(toggle){
+        toggle = false;
+        rows = table.rows;
+        for(i = 1; i < (rows.length - 1); i++){
+          toSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          if(dir == "asc"){
+            if(x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()){
+              toSwitch = true;
+              break;
+            }
+          } else if(dir == "desc"){
+            if(x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()){
+              toSwitch = true;
+              break;
+            }
+          }
+        }
+        if(toSwitch){
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            toggle = true;
+            switchCnt ++; 
+          } else {
+            if (switchCnt == 0 && dir == "asc") {
+              dir = "desc";
+              toggle = true;
+            }
+          }
+      }
+    }
+  </script>
 
 </body>
 

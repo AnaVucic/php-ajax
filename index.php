@@ -11,15 +11,10 @@
         $username_post = $_POST['username'];
         $password_post = $_POST['password'];
 
-        $user_post = new User(1,$username_post, $password_post);
+        $result_login = User::logInUser($username_post, $password_post, $conn);
         
-
-        $result_login = User::logInUser($user_post, $conn);
-
-       
-        
-        if($user_post != null){
-          $_SESSION['UserID'] = $user_post->id;
+        if($result_login != null){
+          $_SESSION['UserID'] = $result_login->id;
           header('Location: home.php');
           exit();
         } else {
@@ -45,7 +40,7 @@
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
-  <title>OnePage Bootstrap Template - Index</title>
+  <title>Gym Membership App</title>
 </head>
 <body>
   <header id="header" class="fixed-top">
@@ -62,12 +57,15 @@
         <div class="col-xl-7 col-lg-9 text-center">
             <div class="section-title">
                 <h2>LOGIN</h2>
-                <p>Please enter your credentials</p>
+                
                 <?php
-                // if($loginError){ ?>
-                   <!-- <p class="alert alert-danger">Invalid username or password</p> -->
+                 if($loginError){ ?>
+                   <p class="alert alert-danger">Invalid username or password</p>
                 <?php
-                // }
+                 } else { ?>
+                  <p>Please enter your credentials</p>
+                  <?php
+                 }
                 ?>
             </div>
             <form method="POST" action="#">
@@ -77,7 +75,7 @@
               <div class="form-outline mb-4">
                   <input type="password" id="password-input" name="password" class="form-control" placeholder = "Password" />
               </div>
-              <div class="text-center col-12"><button type="submit">Login</button></div>
+              <div class="text-center col-12"><button class="btn btn-secondary" type="submit">Login</button></div>
             </form>
         </div>
       </div>
